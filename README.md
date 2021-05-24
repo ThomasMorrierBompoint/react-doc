@@ -153,6 +153,8 @@ Props are read only, in other words whether you declare a component as a functio
 - Statefull VS Stateless component
     > The literal difference is that one has state, and the other doesn’t. That means the stateful components are keeping track of changing data, while stateless components print out what is given to them via props, or they always render the same thing.
 
+- Statefull/Control component are component that control (Presentationnal/Dumb/Stateless)
+
 - React may batch multiple setState() calls into a single update for performance.
 
 - Because this.props and this.state may be updated asynchronously, you should not rely on their values for calculating the next state.
@@ -244,19 +246,62 @@ Hooks are a new addition in React 16.8. They let you use state and other React f
 - Only call Hooks from React function components. Don’t call Hooks from regular JavaScript functions. (There is just one other valid place to call Hooks — your own custom Hooks.
 
 - `useState`
+
+    ```javascript
+    const [user, setUser] = useState({ name: '', age: 0 });
+    const nameChangeHandler = (event) => {
+        setUser((prevState) => {
+            return {
+                name: event.target.value,
+                ...prevState
+            }
+        });
+    };
+    ```
+
 - `useEffect`
-- `useContext`
-- `useReducer`
-- `useCallback`
-- `useMemo`
-- `useRef`
-- `useImperativeHandle`
-- `useLayoutEffect`
-- `useDebugValue`
 
     ```javascript
     useEffect(() => {
         ...
         return () => { \* Cleanup function *\};
-    }, [\* Optionnal de *\]);
+    }, [\* Optionnal *\]);
     ```
+
+- `useContext`
+
+    Provide a way to pass "state" from a component to any other component ()
+
+- `useReducer`
+
+    ```javascript
+    const [state, dispatchFn] = useReducer(reducerFn, initialState, initFn)
+    ```
+
+- `useCallback`
+
+    Store the function preventing it from being evaluated on every component update, provide an array of dependencies to specify when the function should be evaluated.
+
+    ```javascript
+    const setUserHandler = useCallback(() => {
+        setUser((prevState) => {
+            return {
+                name: event.target.value,
+                ...prevState
+            }
+        });
+    }, [\* Optionnal *\]);
+    ```
+
+- `useMemo`
+
+    Store the result of a function preventing it from running on every component update, provide an array of dependencies to specify when the function should run.
+
+- `useRef`
+
+- `useImperativeHandle`
+
+- `useLayoutEffect`
+
+- `useDebugValue`
+
