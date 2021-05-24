@@ -7,6 +7,9 @@ Most of the information in this document comes from the official [React official
 React is a JavaScript library for building user interfaces. Most of the project combine Reactjs with many other libraries such as (React Router, React Dom, Redux...)
 
 ## What is JSX
+
+Fundamentally, JSX just provides syntactic sugar for the `React.createElement(component, props, ...children)` function
+
 - JSX may remind you of a template language, but it comes with the full power of JavaScript
 
 - After compilation, JSX expressions become regular JavaScript function calls and evaluate to JavaScript objects.
@@ -25,6 +28,8 @@ React is a JavaScript library for building user interfaces. Most of the project 
     );
     ```
 
+    compiles into:
+
     ```javascript
     const element = React.createElement(
       'h1',
@@ -32,6 +37,50 @@ React is a JavaScript library for building user interfaces. Most of the project 
       'Hello, world!'
     );
     ```
+- Using Dot Notation for JSX Type
+    - This is convenient if you have a single module that exports many React components.
+
+- Choosing the Type at Runtime
+
+    ```javascript
+    import React from 'react';
+    import { PhotoStory, VideoStory } from './stories';
+
+    const components = {
+      photo: PhotoStory,
+      video: VideoStory
+    };
+
+    function Story(props) {
+      // Correct! JSX type can be a capitalized variable.
+      const SpecificStory = components[props.storyType];
+      return <SpecificStory story={props.story} />;
+    }
+    ```
+
+- Functions as Children
+
+    ```javascript
+    // Calls the children callback numTimes to produce a repeated component
+    function Repeat(props) {
+      let items = [];
+      for (let i = 0; i < props.numTimes; i++) {
+        items.push(props.children(i));
+      }
+      return <div>{items}</div>;
+    }
+
+    function ListOfTenThings() {
+      return (
+        <Repeat numTimes={10}>
+          {(index) => <div key={index}>This is item {index} in the list</div>}
+        </Repeat>
+      );
+    }
+    ```
+
+- Booleans, Null, and Undefined Are Ignored
+    - false, null, undefined, and true are valid children. They simply don’t render.
 
 ## Rendering Elements
 Elements are the smallest building blocks of React apps.
@@ -46,6 +95,14 @@ Elements are the smallest building blocks of React apps.
 - React elements are immutable. Once you create an element, you can’t change its children or attributes. An element is like a single frame in a movie: it represents the UI at a certain point in time.
 
 - React DOM compares the element and its children to the previous one, and only applies the DOM updates necessary to bring the DOM to the desired state.
+
+## Performance
+
+- React.PureComponent
+
+    React.PureComponent is similar to React.Component. The difference between them is that React.Component doesn’t implement shouldComponentUpdate(), but React.PureComponent implements it with a shallow prop and state comparison.
+
+
 
 ## Components
 
@@ -114,3 +171,29 @@ Context provides a way to pass data through the component tree without having to
 - A React node can only consume one `Context` which means that if 
 
 - An nother problem is that it's not performent to hold data that changes frequently.
+
+## Forwarding Refs
+
+Ref forwarding is a technique for automatically passing a ref through a component to one of its children. This is typically not necessary for most components in the application. However, it can be useful for some kinds of components, especially in reusable component libraries.
+
+- Forwarding refs to DOM components
+- Forwarding refs in higher-order components
+
+## Fragments
+
+Fragments let you group a list of children without adding extra nodes to the DOM.
+
+- `<React.Fragment>`
+-  `<></>`
+
+## Higher-Order Components
+
+A higher-order component (HOC) is an advanced technique in React for reusing component logic. HOCs are not part of the React API, per se. They are a pattern that emerges from React’s compositional nature.
+
+- Concretely, a higher-order component is a function that takes a component and returns a new component.
+- Don’t Mutate the Original Component. Use Composition.
+- Don’t Use HOCs Inside the render Method
+- Refs Aren’t Passed Through
+  - The solution for this problem is to use the React.forwardRef API
+
+
