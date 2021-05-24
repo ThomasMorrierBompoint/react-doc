@@ -28,7 +28,7 @@ Fundamentally, JSX just provides syntactic sugar for the `React.createElement(co
     );
     ```
 
-    compiles into:
+    **compiles into:**
 
     ```javascript
     const element = React.createElement(
@@ -99,10 +99,21 @@ Elements are the smallest building blocks of React apps.
 ## Performance
 
 - React.PureComponent
+    `React.PureComponent` is similar to `React.Component`. The difference between them is that `React.Component` doesn’t implement `shouldComponentUpdate()`, but `React.PureComponent` implements it with a shallow prop and state comparison.
 
-    React.PureComponent is similar to React.Component. The difference between them is that React.Component doesn’t implement shouldComponentUpdate(), but React.PureComponent implements it with a shallow prop and state comparison.
+- React.memo
+    - React.memo is a higher order component.
+    - If your component renders the same result given the same props, you can wrap it in a call to React.memo for a performance boost in some cases by memoizing the result. This means that React will skip rendering the component, and reuse the last rendered result.
+    - React.memo only checks for prop changes. If your function component wrapped in React.memo has a useState, useReducer or useContext Hook in its implementation, it will still rerender when state or context change.
+    - By default it will only shallowly compare complex objects in the props object. If you want control over the comparison, you can also provide a custom comparison function as the second argument.
+    - This method only exists as a performance optimization. Do not rely on it to “prevent” a render, as this can lead to bugs.
 
+- React.lazy
 
+    ```javascript
+    // This component is loaded dynamically
+    const SomeComponent = React.lazy(() => import('./SomeComponent'));
+    ```
 
 ## Components
 
@@ -130,6 +141,8 @@ Components let you split the UI into independent, reusable pieces, and think abo
 
 - Hooks can't be use directly inside a Class component.
 
+- The Component Lifecycle [lifecycle diagram](https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/)
+
 ## Props
 Props are read only, in other words whether you declare a component as a function or a class, it must never modify its own props.
 
@@ -150,6 +163,9 @@ Props are read only, in other words whether you declare a component as a functio
     }));
     ```
     
+- The Power Of Not Mutating Data
+    The simplest way to avoid this problem is to avoid mutating values that you are using as props or state.
+    
 - Neither parent nor child components can know if a certain component is stateful or stateless, and they shouldn’t care whether it is defined as a function or a class.
 
 ## Lifting State Up
@@ -166,7 +182,7 @@ Context provides a way to pass data through the component tree without having to
 
 - If you only want to avoid passing some props through many levels, component composition is often a simpler solution than context.
 
-**Cons**
+    **Cons**
 
 - A React node can only consume one `Context` which means that if 
 
@@ -196,4 +212,25 @@ A higher-order component (HOC) is an advanced technique in React for reusing com
 - Refs Aren’t Passed Through
   - The solution for this problem is to use the React.forwardRef API
 
+## Portals
 
+Portals provide a first-class way to render children into a DOM node that exists outside the DOM hierarchy of the parent component.
+
+- The first argument (child) is any renderable React child, such as an element, string, or fragment. The second argument (container) is a DOM element.
+
+## Profiler API
+
+The Profiler measures how often a React application renders and what the “cost” of rendering is. Its purpose is to help identify parts of an application that are slow and may benefit from optimizations such as memoization.
+
+- A Profiler can be added anywhere in a React tree to measure the cost of rendering that part of the tree. It requires two props: an id (string) and an onRender callback (function) which React calls any time a component within the tree “commits” an update.
+
+    ```javascript
+    render(
+      <App>
+        <Profiler id="Navigation" onRender={callback}>
+          <Navigation {...props} />
+        </Profiler>
+        <Main {...props} />
+      </App>
+    );
+    ```
