@@ -259,6 +259,36 @@ Hooks are a new addition in React 16.8. They let you use state and other React f
     };
     ```
 
+    ```javascript
+    const [fromState, setFormState] = useState({} as any)
+
+    const updateFormPart1 = (event: any) => {
+    setFormState({
+        ...fromState,
+        lastName: event.lastName,
+    })
+
+    setFormState((prevState: any) => {
+          return {
+            lastName: event.lastName,
+            ...prevState
+          }
+        })
+    }
+
+    const updateFormPart2 = (event: any) => {
+        setFormState({
+          ...fromState,
+          name: event.name,
+        })
+    }
+
+    const onSubmit = (event: any) => {
+        updateFormPart1(event)
+        updateFormPart2(event)
+    }
+    ```
+
 - `useEffect`
 
     ```javascript
@@ -291,36 +321,6 @@ Hooks are a new addition in React 16.8. They let you use state and other React f
             }
         });
     }, [\* Optionnal *\]);
-    ```
-    
-    ```javascript
-    const [fromState, setFormState] = useState({} as any)
-
-    const updateFormPart1 = (event: any) => {
-    setFormState({
-      ...fromState,
-      lastName: event.lastName,
-    })
-
-    setFormState((prevState: any) => {
-          return {
-            lastName: event.lastName,
-            ...prevState
-          }
-        })
-    }
-
-    const updateFormPart2 = (event: any) => {
-        setFormState({
-          ...fromState,
-          name: event.name,
-        })
-    }
-
-    const onSubmit = (event: any) => {
-        updateFormPart1(event)
-        updateFormPart2(event)
-    }
     ```
 
 - `useMemo`
